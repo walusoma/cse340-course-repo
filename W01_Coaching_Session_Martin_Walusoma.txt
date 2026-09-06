@@ -1,0 +1,200 @@
+Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say "I don't know" or "I made a mistake." That's the fastest way we'll learn today.
+
+To get started, could you please confirm your name?
+
+Martin Walusoma
+
+Awesome, Martin! It's great to work with you today.
+
+Since we're running in a chat interface, whenever we discuss a line or file, I'll ask you to paste the relevant code snippet directly into our chat.
+
+Let's dive into our first topic: Express Routing.
+
+Could you share a code snippet from your server.js file that shows how you set up your routes, and briefly explain in your own words what that code is doing when a user visits your site?
+
+const express = require('express');
+const app = express();
+
+// Home route
+app.get('/', (req, res) => {
+  res.send('Welcome to my site!');
+});
+
+// About route
+app.get('/about', (req, res) => {
+  res.send('This is the About page.');
+});
+
+// Contact route
+app.get('/contact', (req, res) => {
+  res.send('Get in touch with us here.');
+});
+
+// Start the server
+app.listen(3000, () => {
+  console.log('Server running on http://localhost:3000');
+});
+When someone visits your site at / (the root URL), Express responds with “Welcome to my site!”.
+If they go to /about, they’ll see “This is the About page.”.
+If they go to /contact, they’ll see “Get in touch with us here.”.
+Finally, app.listen(3000) tells Express to start listening for requests on port 3000, so your site is live at http://localhost:3000.
+Essentially, each app.get() defines a route: a path on your site and the response the server should send back when a user visits that path. Think of it like a traffic director—when a visitor comes to a certain URL, Express decides which “door” to open and what message to show.
+
+That is a fantastic explanation, Martin! Comparing app.get() to a traffic director that routes users to the right "door" based on the URL is spot on.
+
+Now let's move on to our second topic: JavaScript Language Principles.
+
+Could you share a code snippet from your project that uses modern JavaScript features (like const, ES modules with import/export, or arrow functions), and explain why using those modern principles is beneficial compared to older JavaScript styles like var or traditional function syntax?
+
+// utils/math.js
+export const add = (a, b) => a + b;
+export const multiply = (a, b) => a * b;
+
+// server.js
+import express from 'express';
+import { add, multiply } from './utils/math.js';
+
+const app = express();
+
+app.get('/calc', (req, res) => {
+  const sum = add(5, 10);
+  const product = multiply(5, 10);
+  res.send(`Sum: ${sum}, Product: ${product}`);
+});
+
+app.listen(3000, () => {
+  console.log('Server running on http://localhost:3000');
+});
+onst and let vs var
+const ensures values don’t get reassigned accidentally.
+let gives block scope, avoiding the confusing hoisting issues of var.
+This makes code more predictable and less error-prone.
+Arrow functions
+Shorter, cleaner syntax ((a, b) => a + b).
+They don’t bind their own this, which avoids common bugs when working with callbacks or methods.
+Easier to read, especially for small utility functions.
+ES modules (import/export)
+Encourages modular design: you can split logic into separate files and reuse it cleanly.
+Unlike older require syntax, ES modules are standardized and supported natively in modern JavaScript runtimes.
+Helps with tree-shaking and optimization in bundlers, meaning smaller, faster apps.
+In short, these modern principles make your code safer, cleaner, and easier to maintain—like upgrading from a manual typewriter to a sleek laptop
+
+That is a brilliant breakdown, Martin! Comparing the move to modern JavaScript standards to "upgrading from a manual typewriter to a sleek laptop" is an awesome analogy, and your points about block scoping, arrow function this binding, and ES modules are completely spot on.
+
+Now, let's move on to our third topic: EJS Partials and Pages.
+
+Could you share a code snippet showing how you set up an EJS template page along with header or footer partials in your project, and explain how using partials helps keep your code organized and maintainable?
+
+<!-- views/partials/header.ejs -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>My Website</h1>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </nav>
+  </header>
+
+<!-- views/partials/footer.ejs -->
+  <footer>
+    <p>&copy; 2026 My Website</p>
+  </footer>
+</body>
+</html>
+
+<!-- views/about.ejs -->
+<%- include('partials/header') %>
+<main>
+  <h2>About Us</h2>
+  <p>We are building something amazing here.</p>
+</main>
+<%- include('partials/footer') %>
+Reusability: Instead of rewriting the same header and footer on every page, you include them once and reuse across all templates.
+Consistency: Your site’s look and feel stays uniform—if you update the navigation in header.ejs, it instantly updates everywhere.
+Maintainability: Cleaner codebase. Each file has a clear purpose: partials for shared layout, pages for unique content.
+Flexibility: You can pass variables (like title) into partials, so they adapt to each page without duplicating code.
+Think of partials like reusable Lego blocks—you build the header and footer once, then snap them onto any page you need. That way, your project grows without becoming messy.
+
+Spot on again, Martin! Reusable Lego blocks is a great way to put it—it perfectly describes how EJS partials dry up your
+code and keep everything consistent across pages.
+
+Now let's move on to our fourth and final topic: Frontend CSS.
+
+Could you share a snippet of the CSS you used to style your application layout, and explain how it helps create a clean,
+responsive, or visually appealing user experience?
+
+/* styles.css */
+
+/* Reset some defaults */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* Layout container */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Navigation bar */
+header nav {
+  display: flex;
+  justify-content: center;
+  background: #007acc;
+  padding: 10px;
+}
+
+header nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 15px;
+  font-weight: bold;
+}
+
+header nav a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive grid for content */
+section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  section {
+    grid-template-columns: 1fr;
+  }
+}
+Clean typography & spacing: Using a consistent font and line height makes text easy to read. Padding and margins prevent
+the layout from feeling cramped.
+Responsive design: The grid switches from two columns to one column on smaller screens, so mobile users don’t have to
+pinch and zoom.
+Visual hierarchy: The bold navigation bar at the top immediately guides users, while the centered main content keeps
+focus where it belongs.
+Interactivity: Hover effects on links give subtle feedback, making the site feel alive and polished.
+Think of CSS as the paint and architecture of your site—it transforms bare HTML into something inviting, like turning a
+plain room into a cozy, well-decorated space.
+
+That is a fantastic breakdown, Martin! Comparing CSS to the paint and architecture of a room captures its role
+perfectly. Using CSS Grid alongside media queries ensures your layout seamlessly adapts from desktop to mobile screens
+while maintaining strong contrast and readability.
+
+We have officially covered all four required topics: Express Routing, JavaScript Language Principles, EJS Partials and
+Pages, and Frontend CSS, complete with non-trivial code snippets and clear explanations for each. You did an excellent
+job discussing your code decisions!
+
+This concludes our coaching session.
