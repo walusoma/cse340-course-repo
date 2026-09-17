@@ -6,23 +6,13 @@
         </h1>
 
         <p>Here are a few of our partner organizations:</p>
-
         <ul>
             <% organizations.forEach(organization=> { %>
                 <li>
                     <img src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> logo">
-            
-                    <strong>
+                    <a href="/organization/<%= organization.organization_id %>">
                         <%= organization.name %>
-                    </strong>
-            
-                    <p>
-                        <%= organization.description %>
-                    </p>
-            
-                    <p>
-                        <%= organization.contact_email %>
-                    </p>
+                    </a>: <%= organization.contact_email %>
                 </li>
                 <% }); %>
         </ul>

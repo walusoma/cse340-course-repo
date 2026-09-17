@@ -1,0 +1,108 @@
+Week 02 Coaching Session Transcript
+
+Student: Martin Walusoma
+
+Coach: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say "I don't know" or "I made a mistake." That's the fastest way we'll learn today.
+
+Coach: Before we begin, can you confirm your name?
+Martin: My name is Martin Walusoma.
+
+Topic 1: Relational Database Design and Structure
+
+Coach: Please share one SQL snippet that shows your database design.
+
+Martin:
+CREATE TABLE project_category (
+    project_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+    PRIMARY KEY (project_id, category_id),
+    CONSTRAINT fk_project FOREIGN KEY (project_id)
+        REFERENCES service_project(project_id),
+    CONSTRAINT fk_category FOREIGN KEY (category_id)
+        REFERENCES category(category_id)
+);
+
+Coach: What is the purpose of this table?
+
+Martin: It connects service projects and categories. A project can belong to many categories, and a category can belong to many projects.
+
+Coach: Why use a composite primary key?
+
+Martin: It prevents duplicate project-category relationships.
+
+Coach: How do the tables relate?
+
+Martin: One organization has many service projects. Categories connect to projects through the bridge table.
+
+Topic 2: Server-Side Data Access Logic (Node.js)
+
+Coach: Please share a Node.js function that gets data from the database.
+
+Martin:
+import db from './db.js';
+
+const getAllCategories = async () => {
+    const query = `
+        SELECT category_id, name
+        FROM public.category
+        ORDER BY name;
+    `;
+    const result = await db.query(query);
+    return result.rows;
+};
+
+Coach: Explain the flow of data.
+
+Martin: The function sends a SQL query, waits for PostgreSQL to respond, and returns the rows.
+
+Coach: Why use async and await?
+
+Martin: Database queries take time, so await pauses until the results come back.
+
+Topic 3: Express Server Logic and Routing
+
+Coach: Please share your categories route.
+
+Martin:
+app.get('/categories', async (req, res) => {
+    const categories = await getAllCategories();
+    const title = 'Service Project Categories';
+    res.render('categories', { title, categories });
+});
+
+Coach: What does this route do?
+
+Martin: It listens for /categories, gets the data from the model, and sends it to the EJS view.
+
+Coach: Why use res.render?
+
+Martin: Because EJS creates dynamic HTML from database data.
+
+Topic 4: Client-Side Rendering (EJS)
+
+Coach: Please share one EJS snippet.
+
+Martin:
+<ul>
+    <% categories.forEach(category => { %>
+        <li><%= category.name %></li>
+    <% }); %>
+</ul>
+
+Coach: What does this loop do?
+
+Martin: It displays every category from the database.
+
+Coach: What is the difference between <%= %> and <%- %>?
+
+Martin: <%= %> escapes output for safety. <%- %> inserts trusted HTML without escaping.
+
+Reflection
+
+Coach: What is one thing you learned this week?
+
+Martin: I learned how data moves from PostgreSQL to Node.js and finally into EJS, and how foreign keys create relationships.
+
+Coach: Great work. We discussed all four required topics, reviewed your code, and connected the database, Node.js, Express, and EJS together.
+
+End of Week 02 Coaching Session.
