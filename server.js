@@ -1,15 +1,33 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import session from 'express-session';
+import flash from './src/middleware/flash.js';
 import { testConnection } from './src/models/db.js';
+import Util from './src/utilities/index.js';
 import router from './src/routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
+const SESSION_SECRET = process.env.SESSION_SECRET;
 
 const app = express();
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Set up session management
+app.use(session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 60 * 60 * 1000 } // Session expires after 1 hour of inactivity
+}));
+
+// Use flash message middleware
+app.use(flash);
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -29,6 +47,12 @@ app.use((req, res, next) => {
 // Middleware to make NODE_ENV available to all EJS templates
 app.use((req, res, next) => {
     res.locals.NODE_ENV = NODE_ENV;
+    next();
+});
+
+// Make navigation available to all EJS templates
+app.use(async (req, res, next) => {
+    res.locals.nav = await Util.getNav();
     next();
 });
 

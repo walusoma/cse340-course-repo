@@ -1,0 +1,114 @@
+Week 03 Coaching Session Transcript
+
+Student: Martin Walusoma
+
+Coach: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say "I don't know" or "I made a mistake." That's the fastest way we'll learn today.
+
+Coach: Before we begin, can you confirm your name?
+Martin: My name is Martin Walusoma.
+
+Topic 1: Models
+
+Coach: Please share one model function that accepts a parameter and uses it in an SQL query.
+
+Martin:
+const getCategoryDetails = async (categoryId) => {
+    const query = `
+        SELECT category_id, name 
+        FROM public.category 
+        WHERE category_id = $1;
+    `;
+    const result = await db.query(query, [categoryId]);
+    return result.rows.length > 0 ? result.rows[0] : null;
+};
+
+Coach: What does this model function do, and why do you use $1 instead of putting categoryId directly into the string?
+
+Martin: It retrieves a single category from the database using its ID. Using $1 parameterizes the query, which prevents SQL injection attacks by sanitizing the user input.
+
+Topic 2: Views
+
+Coach: Please share an EJS snippet that inserts data into an HTML link.
+
+Martin:
+<ul>
+    <% categories.forEach(category => { %>
+        <li>
+            <a href="/category/<%= category.category_id %>">
+                <strong><%= category.name %></strong>
+            </a>
+        </li>
+    <% }); %>
+</ul>
+
+Coach: What happens when EJS renders this loop?
+
+Martin: It loops through every category in the array and dynamically inserts category.category_id into the href attribute, creating dynamic links like /category/1 or /category/2.
+
+Topic 3: Controllers
+
+Coach: Please share a route handler from your controller that uses a route parameter.
+
+Martin:
+const showCategoryDetailsPage = async (req, res, next) => {
+    try {
+        const categoryId = parseInt(req.params.id, 10);
+        const category = await getCategoryDetails(categoryId);
+
+        if (!category) {
+            const err = new Error('Category Not Found');
+            err.status = 404;
+            return next(err);
+        }
+
+        const projects = await getProjectsByCategoryId(categoryId);
+
+        res.render('category', {
+            title: `${category.name} Projects`,
+            category,
+            projects
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+Coach: How does req.params.id get its value, and what happens if no category is found?
+
+Martin: Express extracts the value from the URL route /category/:id and assigns it to req.params.id. If the category does not exist, we create a 404 error object and pass it to next(err) to trigger the error handling middleware.
+
+Topic 4: Error Handling
+
+Coach: Please share your strategy and code snippet for handling errors like 404 or 500 status pages.
+
+Martin:
+// 404 Handler - Catch unmatched routes
+app.use((req, res, next) => {
+    const err = new Error('Page Not Found');
+    err.status = 404;
+    next(err);
+});
+
+// Global Error Handler (500 / custom error status)
+app.use((err, req, res, next) => {
+    const status = err.status || 500;
+    res.status(status).render('errors/error', {
+        title: status === 404 ? '404 - Page Not Found' : '500 - Server Error',
+        message: err.message || 'An unexpected error occurred.',
+        status
+    });
+});
+
+Coach: How does Express know this middleware is designed specifically for handling errors?
+
+Martin: Express recognizes error middleware because the function signature takes four parameters: (err, req, res, next). Whenever next(err) is called, Express skips normal middleware and jumps straight to this error handler.
+
+Reflection
+
+Coach: What is one thing you learned this week?
+
+Martin: I learned how to separate concerns using the MVC pattern, extract route parameters in Express controllers, pass dynamic IDs to parametrized database queries, and handle errors centrally with custom status pages.
+
+Coach: Great work. We discussed all four required topics, reviewed your code, and verified your implementation of models, views, controllers, and error handling.
+
+End of Week 03 Coaching Session.
