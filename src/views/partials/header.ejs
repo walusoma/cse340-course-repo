@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        <%= title %>
+        <%= typeof title !=='undefined' ? title : 'Service Project Tracker' %>
     </title>
     <link rel="stylesheet" href="/css/main.css">
 </head>
@@ -13,10 +13,10 @@
 <body>
 
     <nav>
-    <%- typeof nav !=='undefined' ? nav : '' %>
+        <%- typeof nav !=='undefined' ? nav : '' %>
     </nav>
 
-    <% const messages=flash(); %>
+    <% const messages=(typeof flash==='function' ) ? flash() : {}; %>
         <% Object.keys(messages).forEach(type=> { %>
             <% if (messages[type].length> 0) { %>
                 <% messages[type].forEach(msg=> { %>
@@ -26,4 +26,3 @@
                     <% }); %>
                         <% } %>
                             <% }); %>
-                            
