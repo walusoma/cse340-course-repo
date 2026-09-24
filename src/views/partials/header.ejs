@@ -13,7 +13,7 @@
 <body>
 
     <nav>
-        <%- nav %>
+    <%- typeof nav !=='undefined' ? nav : '' %>
     </nav>
 
     <% const messages=flash(); %>
