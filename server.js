@@ -20,10 +20,10 @@ app.use(express.json());
 
 // Set up session management
 app.use(session({
-    secret: SESSION_SECRET,
+    secret: SESSION_SECRET || 'super-secret-fallback-key',
     resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 60 * 60 * 1000 } // Session expires after 1 hour of inactivity
+    saveUninitialized: false,
+    cookie: { maxAge: 60 * 60 * 1000 }
 }));
 
 // Use flash message middleware
@@ -52,7 +52,12 @@ app.use((req, res, next) => {
 
 // Make navigation available to all EJS templates
 app.use(async (req, res, next) => {
-    res.locals.nav = await Util.getNav();
+    try {
+        res.locals.nav = await Util.getNav();
+    } catch (error) {
+        console.error('Failed to load navigation menu:', error.message);
+        res.locals.nav = ''; // Fallback so views never crash
+    }
     next();
 });
 
