@@ -28,9 +28,8 @@ const organizationValidation = [
         .isEmail()
         .withMessage('Please provide a valid email address'),
     body('logoFilename')
+        .optional({ checkFalsy: true })
         .trim()
-        .notEmpty()
-        .withMessage('Logo filename is required')
         .isLength({ max: 255 })
         .withMessage('Logo filename cannot exceed 255 characters')
 ];
