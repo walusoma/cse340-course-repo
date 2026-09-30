@@ -44,16 +44,26 @@ app.use((req, res, next) => {
     next();
 });
 
-// Middleware to make NODE_ENV available to all EJS templates
+// Middleware to set res.locals variables for all templates
 app.use((req, res, next) => {
+    res.locals.isLoggedIn = false;
+
+    if (req.session && req.session.user) {
+        res.locals.isLoggedIn = true;
+    }
+
+    // Pass the logged-in user object (including user.role_name) to all views
+    res.locals.user = (req.session && req.session.user) ? req.session.user : null;
+
     res.locals.NODE_ENV = NODE_ENV;
+
     next();
 });
 
 // Make navigation available to all EJS templates
 app.use(async (req, res, next) => {
     try {
-        res.locals.nav = await Util.getNav();
+        res.locals.nav = await Util.getNav(res.locals.isLoggedIn);
     } catch (error) {
         console.error('Failed to load navigation menu:', error.message);
         res.locals.nav = ''; // Fallback so views never crash
