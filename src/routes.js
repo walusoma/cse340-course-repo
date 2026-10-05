@@ -43,6 +43,11 @@ import {
     showUsers
 } from './controllers/users.js';
 
+import {
+    processVolunteer,
+    processRemoveVolunteer
+} from './controllers/volunteer.js';
+
 const router = express.Router();
 
 // Home page
@@ -71,6 +76,10 @@ router.get('/category/:id', showCategoryDetailsPage);
 
 router.get('/projects', showProjectsPage);
 router.get('/project/:id', showProjectDetailsPage);
+
+// Volunteer Routes
+router.get('/project/:projectId/volunteer', requireLogin, processVolunteer);
+router.get('/project/:projectId/remove-volunteer', requireLogin, processRemoveVolunteer);
 
 // ==========================================
 // ADMIN-ONLY ROUTES (Protected by requireRole)

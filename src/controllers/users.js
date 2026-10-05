@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { createUser, authenticateUser, getAllUsers } from '../models/users.js';
+import { getUserVolunteers } from '../models/volunteer.js';
 
 const showUserRegistrationForm = (req, res) => {
     res.render('register', { title: 'Register' });
@@ -32,6 +33,7 @@ const processLoginForm = async (req, res) => {
 
     try {
         const user = await authenticateUser(email, password);
+
         if (user) {
             req.session.user = user;
             req.flash('success', 'Login successful!');
@@ -101,13 +103,30 @@ const showUsers = async (req, res) => {
     }
 };
 
-const showDashboard = (req, res) => {
+const showDashboard = async (req, res) => {
     const user = req.session.user;
-    res.render('dashboard', {
-        title: 'Dashboard',
-        name: user.name,
-        email: user.email
-    });
+
+    try {
+        const volunteerProjects = await getUserVolunteers(user.user_id);
+
+        res.render('dashboard', {
+            title: 'Dashboard',
+            name: user.name,
+            email: user.email,
+            volunteerProjects
+        });
+    } catch (error) {
+        console.error('Error getting volunteer projects:', error);
+
+        req.flash('error', 'Unable to retrieve your volunteer projects.');
+
+        res.render('dashboard', {
+            title: 'Dashboard',
+            name: user.name,
+            email: user.email,
+            volunteerProjects: []
+        });
+    }
 };
 
 export {

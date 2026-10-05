@@ -3,8 +3,6 @@ DROP TABLE IF EXISTS project_category;
 DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS service_project;
 DROP TABLE IF EXISTS organization CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS roles CASCADE;
 
 -- Create Organization Table
 CREATE TABLE organization (
@@ -130,3 +128,46 @@ CREATE TABLE users (
     role_id INTEGER REFERENCES roles(role_id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+SELECT * FROM users;
+
+DELETE FROM users
+WHERE email = 'test@example.com';
+
+SELECT * FROM users;
+
+
+SELECT * FROM roles;
+
+UPDATE users 
+SET role_id = (SELECT role_id FROM roles WHERE role_name = 'admin') 
+WHERE email = 'admin@example.com';
+
+SELECT user_id, name, email, role_id
+FROM users
+WHERE email = 'admin@example.com';
+
+
+
+-- =========================================
+-- WEEK 06: Volunteering Feature
+-- =========================================
+
+-- Create Volunteer Table
+CREATE TABLE volunteer (
+    user_id INTEGER NOT NULL,
+    project_id INTEGER NOT NULL,
+
+    PRIMARY KEY (user_id, project_id),
+
+    CONSTRAINT fk_volunteer_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_volunteer_project
+        FOREIGN KEY (project_id)
+        REFERENCES service_project(project_id)
+        ON DELETE CASCADE
+);
+
